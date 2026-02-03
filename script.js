@@ -1,11 +1,14 @@
 const video = document.getElementById("webcam");
 const captions = document.getElementById("captions");
+const languageSelect = document.getElementById("language");
 
-// Start webcam (optional)
+let recognition;
+
+// Start webcam
 async function startWebcam() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: true, 
+      video: true,
       audio: true
     });
     video.srcObject = stream;
@@ -14,18 +17,18 @@ async function startWebcam() {
   }
 }
 
-// Start live speech recognition
+// Start speech recognition
 function startSpeechRecognition() {
-  // Check browser support
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
     captions.textContent = "Your browser does not support speech recognition.";
     return;
   }
 
-  const recognition = new SpeechRecognition();
-  recognition.continuous = true; // Keep listening
-  recognition.interimResults = true; // Show partial captions
+  recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = languageSelect.value; // set initial language
 
   recognition.onresult = (event) => {
     let text = "";
@@ -41,6 +44,15 @@ function startSpeechRecognition() {
 
   recognition.start();
 }
+
+// Change language dynamically
+languageSelect.addEventListener("change", () => {
+  if (recognition) {
+    recognition.stop();           // stop current recognition
+    recognition.lang = languageSelect.value;  // set new language
+    recognition.start();          // restart recognition
+  }
+});
 
 startWebcam();
 startSpeechRecognition();

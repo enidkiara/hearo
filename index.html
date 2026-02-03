@@ -6,9 +6,22 @@
 </head>
 <body>
   <h1>Live Speech Captions</h1>
+
+  <!-- Language Selector -->
+  <label for="language">Choose language:</label>
+  <select id="language">
+    <option value="en-US">English</option>
+    <option value="es-ES">Spanish</option>
+    <option value="fr-FR">French</option>
+    <option value="de-DE">German</option>
+    <option value="ja-JP">Japanese</option>
+    <option value="zh-CN">Chinese</option>
+  </select>
+
   <video id="webcam" autoplay playsinline muted></video>
   <div id="captions" style="margin-top: 20px; font-size: 1.5rem; font-weight: bold;"></div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
