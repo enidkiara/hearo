@@ -65,16 +65,19 @@ const languageSelect = document.getElementById("language");
 const overlay = document.getElementById("overlay");
 let recognition;
 
-// 1️⃣ Start webcam
+// 1️⃣ Start webcam and wait until video is ready
 async function startWebcam() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     video.srcObject = stream;
 
-    // Wait until video metadata is loaded
     return new Promise((resolve) => {
+      // Wait until video metadata is loaded
       video.onloadedmetadata = () => {
         video.play();
+        // Set canvas size to match video
+        overlay.width = video.videoWidth;
+        overlay.height = video.videoHeight;
         resolve();
       };
     });
@@ -116,38 +119,44 @@ languageSelect.addEventListener("change", () => {
   recognition = createRecognition(languageSelect.value);
 });
 
-// 4️⃣ Emotion detection
+// 4️⃣ Load face-api models
 async function loadModels() {
-  await faceapi.nets.tinyFaceDetector.loadFromUri('./models'); // adjust path if needed
+  // Make sure you have a folder called "models" with the weights inside
+  await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
   await faceapi.nets.faceExpressionNet.loadFromUri('./models');
 }
 
+// 5️⃣ Emotion detection
 async function detectEmotions() {
-  const canvas = overlay;
+  const ctx = overlay.getContext('2d');
 
   // Make sure canvas matches video size
-  faceapi.matchDimensions(canvas, { width: video.videoWidth, height: video.videoHeight });
+  faceapi.matchDimensions(overlay, { width: video.videoWidth, height: video.videoHeight });
 
   setInterval(async () => {
-    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+    // Detect faces and expressions
+    const detections = await faceapi
+      .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
       .withFaceExpressions();
 
+    // Resize results to match overlay
     const resized = faceapi.resizeResults(detections, { width: video.videoWidth, height: video.videoHeight });
 
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Clear overlay
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-    faceapi.draw.drawDetections(canvas, resized);
-    faceapi.draw.drawFaceExpressions(canvas, resized);
+    // Draw detections and expressions
+    faceapi.draw.drawDetections(overlay, resized);
+    faceapi.draw.drawFaceExpressions(overlay, resized);
   }, 200);
 }
 
-// 5️⃣ Initialize everything
+// 6️⃣ Initialize everything
 async function init() {
-  await loadModels();        // load face-api models
-  await startWebcam();       // wait until webcam is ready
+  await loadModels();      // load face-api models
+  await startWebcam();     // wait until webcam is ready
   recognition = createRecognition(languageSelect.value); // start captions
-  detectEmotions();          // start emotion detection
+  detectEmotions();        // start emotion detection
 }
 
 init();
