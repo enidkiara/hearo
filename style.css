@@ -25,3 +25,8 @@
     margin-bottom: 10px;
   }
   
+  .video-container {
+    position: relative;
+    display: inline-block;
+  }
+  

@@ -2,26 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Live Speech Captions</title>
+  <title>Hearo - Live Captions + Emotions</title>
+
+  <!-- Face API library -->
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+
+  <!-- Linked CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Live Speech Captions</h1>
+  <h1>Hearo</h1>
 
-  <!-- Language Selector -->
-  <label for="language">Choose language:</label>
-  <select id="language">
-    <option value="en-US">English</option>
-    <option value="es-ES">Spanish</option>
-    <option value="fr-FR">French</option>
-    <option value="de-DE">German</option>
-    <option value="ja-JP">Japanese</option>
-    <option value="zh-CN">Chinese</option>
-  </select>
+  <!-- Language selector -->
+  <div id="controls">
+    <label for="language">Choose language:</label>
+    <select id="language">
+      <option value="en-US">English</option>
+      <option value="es-ES">Spanish</option>
+      <option value="fr-FR">French</option>
+      <option value="de-DE">German</option>
+      <option value="ja-JP">Japanese</option>
+      <option value="zh-CN">Chinese</option>
+    </select>
+  </div>
 
-  <video id="webcam" autoplay playsinline muted></video>
-  <div id="captions" style="margin-top: 20px; font-size: 1.5rem; font-weight: bold;"></div>
+  <!-- Video + emotion overlay -->
+  <div class="video-container">
+    <video id="webcam" autoplay playsinline muted width="640" height="480"></video>
+    <canvas id="overlay" width="640" height="480"></canvas>
+  </div>
 
+  <!-- Captions -->
+  <div id="captions">Speak something…</div>
+
+  <!-- JS -->
   <script src="script.js"></script>
 </body>
 </html>
