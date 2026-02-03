@@ -65,17 +65,25 @@ const languageSelect = document.getElementById("language");
 const overlay = document.getElementById("overlay");
 let recognition;
 
-// Start webcam
+// 1️⃣ Start webcam
 async function startWebcam() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     video.srcObject = stream;
+
+    // Wait until video metadata is loaded
+    return new Promise((resolve) => {
+      video.onloadedmetadata = () => {
+        video.play();
+        resolve();
+      };
+    });
   } catch (err) {
     console.error("Error accessing webcam/microphone:", err);
   }
 }
 
-// Speech recognition
+// 2️⃣ Speech recognition
 function createRecognition(lang) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
@@ -102,39 +110,44 @@ function createRecognition(lang) {
   return rec;
 }
 
-// Language change
+// 3️⃣ Handle language change
 languageSelect.addEventListener("change", () => {
   if (recognition) recognition.stop();
   recognition = createRecognition(languageSelect.value);
 });
 
-// Emotion detection
+// 4️⃣ Emotion detection
 async function loadModels() {
-  await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-  await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+  await faceapi.nets.tinyFaceDetector.loadFromUri('./models'); // adjust path if needed
+  await faceapi.nets.faceExpressionNet.loadFromUri('./models');
 }
 
 async function detectEmotions() {
   const canvas = overlay;
+
+  // Make sure canvas matches video size
   faceapi.matchDimensions(canvas, { width: video.videoWidth, height: video.videoHeight });
 
   setInterval(async () => {
     const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
       .withFaceExpressions();
+
     const resized = faceapi.resizeResults(detections, { width: video.videoWidth, height: video.videoHeight });
 
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     faceapi.draw.drawDetections(canvas, resized);
     faceapi.draw.drawFaceExpressions(canvas, resized);
   }, 200);
 }
 
-// Initialize everything
+// 5️⃣ Initialize everything
 async function init() {
-  await loadModels();
-  await startWebcam();
-  recognition = createRecognition(languageSelect.value);
-  detectEmotions();
+  await loadModels();        // load face-api models
+  await startWebcam();       // wait until webcam is ready
+  recognition = createRecognition(languageSelect.value); // start captions
+  detectEmotions();          // start emotion detection
 }
 
 init();
