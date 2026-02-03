@@ -17,20 +17,20 @@ async function startWebcam() {
   }
 }
 
-// Start speech recognition
-function startSpeechRecognition() {
+// Function to create & start speech recognition
+function createRecognition(lang) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
     captions.textContent = "Your browser does not support speech recognition.";
-    return;
+    return null;
   }
 
-  recognition = new SpeechRecognition();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.lang = languageSelect.value; // set initial language
+  const rec = new SpeechRecognition();
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.lang = lang;
 
-  recognition.onresult = (event) => {
+  rec.onresult = (event) => {
     let text = "";
     for (let i = event.resultIndex; i < event.results.length; i++) {
       text += event.results[i][0].transcript;
@@ -38,21 +38,23 @@ function startSpeechRecognition() {
     captions.textContent = text;
   };
 
-  recognition.onerror = (event) => {
+  rec.onerror = (event) => {
     console.error("Speech recognition error:", event.error);
   };
 
-  recognition.start();
+  rec.start();
+  return rec;
 }
 
-// Change language dynamically
+// Start speech recognition initially
+recognition = createRecognition(languageSelect.value);
+
+// Listen for language changes
 languageSelect.addEventListener("change", () => {
   if (recognition) {
-    recognition.stop();           // stop current recognition
-    recognition.lang = languageSelect.value;  // set new language
-    recognition.start();          // restart recognition
+    recognition.stop();  // stop current recognition
   }
+  recognition = createRecognition(languageSelect.value); // create a new instance with new language
 });
 
 startWebcam();
-startSpeechRecognition();
