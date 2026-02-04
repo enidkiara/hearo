@@ -124,6 +124,7 @@ async function loadModels() {
   // Make sure you have a folder called "models" with the weights inside
   await faceapi.nets.tinyFaceDetector.loadFromUri('models');
   await faceapi.nets.faceExpressionNet.loadFromUri('models');
+  await faceapi.nets.faceLandmark68Net.loadFromUri('models');
 }
 
 // Emotion detection
