@@ -128,23 +128,50 @@ async function loadModels() {
 
 // Emotion detection
 async function detectEmotions() {
-  const ctx = overlay.getContext('2d');
-
-  faceapi.matchDimensions(overlay, { width: video.videoWidth, height: video.videoHeight });
-
-  setInterval(async () => {
-    const detections = await faceapi
-      .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-      .withFaceExpressions();
-
-    const resized = faceapi.resizeResults(detections, { width: video.videoWidth, height: video.videoHeight });
-
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-
-    faceapi.draw.drawDetections(overlay, resized);
-    faceapi.draw.drawFaceExpressions(overlay, resized);
-  }, 200);
-}
+    const ctx = overlay.getContext("2d");
+  
+    faceapi.matchDimensions(overlay, {
+      width: video.videoWidth,
+      height: video.videoHeight
+    });
+  
+    setInterval(async () => {
+      const detections = await faceapi
+        .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+        .withFaceExpressions();
+  
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+  
+      if (!detections.length) return;
+  
+      const resized = faceapi.resizeResults(detections, {
+        width: video.videoWidth,
+        height: video.videoHeight
+      });
+  
+      resized.forEach(det => {
+        const box = det.detection.box;
+        const expressions = det.expressions;
+  
+        // Find strongest emotion
+        const emotion = Object.entries(expressions)
+          .reduce((a, b) => (a[1] > b[1] ? a : b));
+  
+        const emotionText = `${emotion[0]} ${Math.round(emotion[1] * 100)}%`;
+  
+        // Draw box
+        ctx.strokeStyle = "lime";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(box.x, box.y, box.width, box.height);
+  
+        // Draw emotion label
+        ctx.fillStyle = "lime";
+        ctx.font = "20px Arial";
+        ctx.fillText(emotionText, box.x, box.y - 10);
+      });
+    }, 200);
+  }
+  
 
 // Initialize everything
 async function init() {
