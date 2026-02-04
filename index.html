@@ -5,9 +5,7 @@
   <title>Hearo - Live Captions + Emotions</title>
 
   <!-- Face API library -->
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-
-  <!-- Linked CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,7 +26,7 @@
 
   <!-- Video + emotion overlay -->
   <div class="video-container">
-    <video id="webcam" autoplay playsinline muted width="640" height="480"></video>
+    <video id="webcam" playsinline width="640" height="480"></video>
     <canvas id="overlay" width="640" height="480"></canvas>
   </div>
 
