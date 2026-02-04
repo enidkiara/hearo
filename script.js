@@ -122,8 +122,8 @@ languageSelect.addEventListener("change", () => {
 // 4️⃣ Load face-api models
 async function loadModels() {
   // Make sure you have a folder called "models" with the weights inside
-  await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
-  await faceapi.nets.faceExpressionNet.loadFromUri('./models');
+  await faceapi.nets.tinyFaceDetector.loadFromUri('models');
+  await faceapi.nets.faceExpressionNet.loadFromUri('models');
 }
 
 // 5️⃣ Emotion detection
