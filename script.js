@@ -5,11 +5,10 @@ const languageSelect = document.getElementById("language");
 let recognition;
 
 // --------------------
-// SPEECH RECOGNITION
+// Create Speech Recognition
 // --------------------
 function createRecognition(lang) {
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
     captions.textContent = "Speech recognition not supported.";
@@ -26,28 +25,29 @@ function createRecognition(lang) {
     for (let i = event.resultIndex; i < event.results.length; i++) {
       text += event.results[i][0].transcript;
     }
+
     captions.textContent = text;
 
     // --------------------
-    // DETECT TONE FROM TEXT
+    // Detect Tone Using Sentiment.js
     // --------------------
     const sentiment = new Sentiment();
     const result = sentiment.analyze(text);
-    let tone = "Neutral";
 
+    let tone = "Neutral";
     if (result.score > 0) tone = "Positive / Happy";
     else if (result.score < 0) tone = "Negative / Upset";
 
     toneDiv.textContent = "Tone: " + tone;
   };
 
-  rec.onerror = (e) => console.error("Speech error:", e);
+  rec.onerror = (e) => console.error("Speech recognition error:", e);
   rec.start();
   return rec;
 }
 
 // --------------------
-// LANGUAGE CHANGE
+// Language Selection
 // --------------------
 languageSelect.addEventListener("change", () => {
   if (recognition) recognition.stop();
@@ -55,9 +55,21 @@ languageSelect.addEventListener("change", () => {
 });
 
 // --------------------
-// INIT
+// Initialize
 // --------------------
 function init() {
+  // For some browsers, audio will only start after user interacts
+  document.body.addEventListener(
+    "click",
+    () => {
+      if (recognition && recognition.start) {
+        recognition.start();
+        console.log("Speech recognition resumed");
+      }
+    },
+    { once: true }
+  );
+
   recognition = createRecognition(languageSelect.value);
 }
 
