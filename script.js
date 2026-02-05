@@ -53,50 +53,42 @@ async function startAudioAnalysis() {
 }
 
 function getAudioStats() {
-  analyser.getByteFrequencyData(dataArray);
+  analyser.getByteTimeDomainData(dataArray);
 
   let sum = 0;
-  let peaks = 0;
+  let activity = 0;
 
   for (let i = 0; i < dataArray.length; i++) {
-    sum += dataArray[i];
-    if (dataArray[i] > 120) peaks++;
+    const sample = Math.abs(dataArray[i] - 128); // center at 0
+    sum += sample;
+    if (sample > 20) activity++;
   }
 
   return {
     volume: sum / dataArray.length,
-    pitchActivity: peaks
+    activity
   };
 }
-
 
 // --------------------
 // UPDATE TONE DISPLAY
 // --------------------
-function detectTone(volume, pitchActivity) {
-  if (volume > 55 || pitchActivity > 25) {
-    return "sounds excited or upset";
-  }
-
-  if (volume > 30 || pitchActivity > 10) {
-    return "sounds neutral";
-  }
-
+function detectTone(volume, activity) {
+  if (volume > 40 || activity > 100) return "sounds excited or upset";
+  if (volume > 15 || activity > 30) return "sounds neutral";
   return "sounds calm";
 }
 
 function startToneLoop() {
   setInterval(() => {
-    const { volume, pitchActivity } = getAudioStats();
+    const { volume, activity } = getAudioStats();
 
-    console.log("volume:", volume, "pitch:", pitchActivity);
+    console.log("volume:", volume.toFixed(2), "activity:", activity);
 
-    const tone = detectTone(volume, pitchActivity);
+    const tone = detectTone(volume, activity);
     toneDiv.textContent = "Tone: " + tone;
-  }, 400);
+  }, 200);
 }
-
-
 
 // --------------------
 // LANGUAGE CHANGE
@@ -110,15 +102,20 @@ languageSelect.addEventListener("change", () => {
 // INIT
 // --------------------
 async function init() {
-  document.body.addEventListener("click", async () => {
-    if (audioContext && audioContext.state === "suspended") {
-      await audioContext.resume();
-      console.log("AudioContext resumed");
-    }
-  }, { once: true });
+  // resume audio on first user interaction
+  document.body.addEventListener(
+    "click",
+    async () => {
+      if (audioContext && audioContext.state === "suspended") {
+        await audioContext.resume();
+        console.log("AudioContext resumed");
+      }
+    },
+    { once: true }
+  );
 
-  recognition = createRecognition(languageSelect.value);
   await startAudioAnalysis();
+  recognition = createRecognition(languageSelect.value);
   startToneLoop();
 }
 
