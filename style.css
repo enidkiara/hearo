@@ -1,12 +1,11 @@
-   body {
+body {
     font-family: sans-serif;
     text-align: center;
     margin: 20px;
   }
   
-  #webcam {
-    border: 2px solid #333;
-    border-radius: 10px;
+  #controls {
+    margin-bottom: 15px;
   }
   
   #captions {
@@ -15,17 +14,8 @@
     font-weight: bold;
   }
   
-  #overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  
-  #controls {
-    margin-bottom: 10px;
-  }
-  
-  .video-container {
-    position: relative;
-    display: inline-block;
-  }
+  #tone {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #555;
+  }  

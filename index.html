@@ -2,16 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hearo - Live Captions + Emotions</title>
+  <title>Hearo – Live Captions + Tone</title>
 
-  <!-- Face API library -->
-  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Hearo</h1>
 
-  <!-- Language selector -->
   <div id="controls">
     <label for="language">Choose language:</label>
     <select id="language">
@@ -24,16 +21,9 @@
     </select>
   </div>
 
-  <!-- Video + emotion overlay -->
-  <div class="video-container">
-    <video id="webcam" playsinline width="640" height="480"></video>
-    <canvas id="overlay" width="640" height="480"></canvas>
-  </div>
-
-  <!-- Captions -->
   <div id="captions">Speak something…</div>
+  <div id="tone">Tone: —</div>
 
-  <!-- JS -->
   <script src="script.js"></script>
 </body>
 </html>
