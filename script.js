@@ -4,14 +4,13 @@ const languageSelect = document.getElementById("language");
 
 let recognition;
 
-// --------------------
-// Create Speech Recognition
-// --------------------
+// Speech Recognition
+
 function createRecognition(lang) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
-    captions.textContent = "Speech recognition not supported.";
+    captions.textContent = "Speech recognition not supported in this browser.";
     return null;
   }
 
@@ -26,11 +25,12 @@ function createRecognition(lang) {
       text += event.results[i][0].transcript;
     }
 
+    if (text.trim() === "") return;
+
     captions.textContent = text;
 
-    // --------------------
-    // Detect Tone Using Sentiment.js
-    // --------------------
+    // Sentiment-based tone
+
     const sentiment = new Sentiment();
     const result = sentiment.analyze(text);
 
@@ -42,29 +42,31 @@ function createRecognition(lang) {
   };
 
   rec.onerror = (e) => console.error("Speech recognition error:", e);
+
+  rec.onend = () => {
+    console.log("Recognition ended, restarting...");
+    rec.start();
+  };
+
   rec.start();
   return rec;
 }
-
-// --------------------
 // Language Selection
-// --------------------
+
 languageSelect.addEventListener("change", () => {
   if (recognition) recognition.stop();
   recognition = createRecognition(languageSelect.value);
 });
 
-// --------------------
 // Initialize
-// --------------------
+
 function init() {
-  // For some browsers, audio will only start after user interacts
   document.body.addEventListener(
     "click",
     () => {
       if (recognition && recognition.start) {
         recognition.start();
-        console.log("Speech recognition resumed");
+        console.log("Speech recognition started after click");
       }
     },
     { once: true }
