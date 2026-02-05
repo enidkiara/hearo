@@ -52,33 +52,47 @@ async function startAudioAnalysis() {
   source.connect(analyser);
 }
 
-function getAverageVolume() {
+function getAudioStats() {
   analyser.getByteFrequencyData(dataArray);
+
   let sum = 0;
+  let peaks = 0;
 
   for (let i = 0; i < dataArray.length; i++) {
     sum += dataArray[i];
+    if (dataArray[i] > 120) peaks++;
   }
 
-  return sum / dataArray.length;
+  return {
+    volume: sum / dataArray.length,
+    pitchActivity: peaks
+  };
 }
 
-function detectTone(volume) {
-  if (volume > 75) return "sounds excited or frustrated";
-  if (volume > 45) return "sounds neutral";
-  return "sounds calm or sad";
-}
 
 // --------------------
 // UPDATE TONE DISPLAY
 // --------------------
+function detectTone(volume, pitchActivity) {
+  if (volume > 55 || pitchActivity > 25) {
+    return "sounds excited or upset";
+  }
+
+  if (volume > 30 || pitchActivity > 10) {
+    return "sounds neutral";
+  }
+
+  return "sounds calm";
+}
+
 function startToneLoop() {
   setInterval(() => {
-    const volume = getAverageVolume();
-    const tone = detectTone(volume);
+    const { volume, pitchActivity } = getAudioStats();
+    const tone = detectTone(volume, pitchActivity);
     toneDiv.textContent = "Tone: " + tone;
-  }, 500);
+  }, 400);
 }
+
 
 // --------------------
 // LANGUAGE CHANGE
