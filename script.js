@@ -3,8 +3,7 @@ const toneDiv = document.getElementById("tone");
 const languageSelect = document.getElementById("language");
 
 let recognition;
-
-// Speech Recognition
+const sentiment = new Sentiment(); // ← create once
 
 function createRecognition(lang) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -25,14 +24,14 @@ function createRecognition(lang) {
       text += event.results[i][0].transcript;
     }
 
-    if (text.trim() === "") return;
+    if (!text.trim()) return;
 
     captions.textContent = text;
 
-    // Sentiment-based tone
+    // Normalize text for better sentiment detection
+    const clean = text.toLowerCase().replace(/[^\w\s]/g, "");
 
-    const sentiment = new Sentiment();
-    const result = sentiment.analyze(text);
+    const result = sentiment.analyze(clean);
 
     let tone = "Neutral";
     if (result.score > 0) tone = "Positive / Happy";
@@ -51,28 +50,3 @@ function createRecognition(lang) {
   rec.start();
   return rec;
 }
-// Language Selection
-
-languageSelect.addEventListener("change", () => {
-  if (recognition) recognition.stop();
-  recognition = createRecognition(languageSelect.value);
-});
-
-// Initialize
-
-function init() {
-  document.body.addEventListener(
-    "click",
-    () => {
-      if (recognition && recognition.start) {
-        recognition.start();
-        console.log("Speech recognition started after click");
-      }
-    },
-    { once: true }
-  );
-
-  recognition = createRecognition(languageSelect.value);
-}
-
-init();
