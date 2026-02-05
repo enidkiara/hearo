@@ -88,10 +88,14 @@ function detectTone(volume, pitchActivity) {
 function startToneLoop() {
   setInterval(() => {
     const { volume, pitchActivity } = getAudioStats();
+
+    console.log("volume:", volume, "pitch:", pitchActivity);
+
     const tone = detectTone(volume, pitchActivity);
     toneDiv.textContent = "Tone: " + tone;
   }, 400);
 }
+
 
 
 // --------------------
@@ -106,6 +110,13 @@ languageSelect.addEventListener("change", () => {
 // INIT
 // --------------------
 async function init() {
+  document.body.addEventListener("click", async () => {
+    if (audioContext && audioContext.state === "suspended") {
+      await audioContext.resume();
+      console.log("AudioContext resumed");
+    }
+  }, { once: true });
+
   recognition = createRecognition(languageSelect.value);
   await startAudioAnalysis();
   startToneLoop();
