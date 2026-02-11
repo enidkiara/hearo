@@ -1,5 +1,11 @@
 {
-  "rewrites": [
-    { "source": "/analyze-tone", "destination": "/api/analyze-tone" }
+  "version": 2,
+  "builds": [
+    { "src": "public/**", "use": "@vercel/static" },
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/analyze-tone", "dest": "/api/analyze-tone.js" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
