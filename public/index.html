@@ -1,9 +1,9 @@
+cat > public/index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Hearo – Live Captions + Tone</title>
-  <script src="https://cdn.jsdelivr.net/npm/sentiment@5.0.2/build/browser.min.js"></script>
   <script defer src="script.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -22,7 +22,8 @@
     </select>
   </div>
 
-  <div id="captions">Speak something…</div>
+  <div id="captions">Click anywhere to start…</div>
   <div id="tone">Tone: —</div>
 </body>
 </html>
+EOF
