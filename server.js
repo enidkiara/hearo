@@ -16,7 +16,8 @@ app.post("/analyze-tone", async (req, res) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.HF_TOKEN}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Accept": "application/json"
       },
       body: JSON.stringify({ inputs: text })
     });

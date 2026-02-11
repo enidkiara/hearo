@@ -2,13 +2,22 @@ const captions = document.getElementById("captions");
 const toneDiv = document.getElementById("tone");
 const languageSelect = document.getElementById("language");
 
-// Variables
-
 let recognition;
-const sentiment = new Sentiment();
+let toneTimeout;
 
-
-// Speech Recognition
+async function fetchTone(text) {
+  try {
+    const res = await fetch("/analyze-tone", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    toneDiv.textContent = "Tone: " + data.tone;
+  } catch (err) {
+    console.error("Tone fetch failed:", err);
+  }
+}
 
 function createRecognition(lang) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -19,7 +28,7 @@ function createRecognition(lang) {
   }
 
   const rec = new SpeechRecognition();
-  rec.continuous = true; 
+  rec.continuous = true;
   rec.interimResults = true;
   rec.lang = lang;
 
@@ -30,46 +39,41 @@ function createRecognition(lang) {
     }
 
     if (!text.trim()) return;
-
     captions.textContent = text;
 
-    const clean = text.toLowerCase().replace(/[^\w\s]/g, "");
-    const result = sentiment.analyze(clean);
-
-    let tone = "Neutral";
-    if (result.score > 0) tone = "Positive / Happy";
-    else if (result.score < 0) tone = "Negative / Upset";
-
-    toneDiv.textContent = "Tone: " + tone;
+    clearTimeout(toneTimeout);
+    toneTimeout = setTimeout(() => fetchTone(text), 800);
   };
 
-  rec.onerror = (e) => console.error("Speech recognition error:", e);
+  rec.onerror = (e) => {
+    console.error("Speech recognition error:", e);
+    if (e.error === "not-allowed") {
+      captions.textContent = "Microphone access denied. Please allow mic and refresh.";
+    }
+  };
 
   rec.onend = () => {
-    console.log("Recognition ended, restarting...");
-    rec.start();
+    try { rec.start(); } catch (err) {}
   };
 
   return rec;
 }
 
-// Language change
-
 languageSelect.addEventListener("change", () => {
   if (recognition) recognition.stop();
   recognition = createRecognition(languageSelect.value);
-  recognition.start();
+  if (recognition) recognition.start();
 });
-
-// Initialize on click
 
 document.body.addEventListener(
   "click",
   () => {
     if (!recognition) {
       recognition = createRecognition(languageSelect.value);
-      recognition.start();
-      console.log("Speech recognition started");
+      if (recognition) {
+        recognition.start();
+        captions.textContent = "Listening…";
+      }
     }
   },
   { once: true }
