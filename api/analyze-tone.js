@@ -1,13 +1,8 @@
-require("dotenv").config();
-const express = require("express");
-
-const app = express();
-app.use(express.json());
-app.use(express.static("public"));
-
 const HF_API_URL = "https://api-inference.huggingface.co/models/cardiffnlp/twitter-roberta-base-sentiment-latest";
 
-app.post("/analyze-tone", async (req, res) => {
+export default async function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).end();
+
   const { text } = req.body;
   if (!text || !text.trim()) return res.json({ tone: "Neutral" });
 
@@ -29,7 +24,7 @@ app.post("/analyze-tone", async (req, res) => {
     const toneMap = {
       positive: "😊 Positive",
       negative: "😟 Negative",
-      neutral:  "😐 Neutral"
+      neutral: "😐 Neutral"
     };
 
     const tone = toneMap[top.label.toLowerCase()] || top.label;
@@ -38,7 +33,4 @@ app.post("/analyze-tone", async (req, res) => {
     console.error(err);
     res.status(500).json({ tone: "Unknown" });
   }
-});
-
-app.listen(3000, () => console.log("Hearo running at http://localhost:3000"));
-
+}
