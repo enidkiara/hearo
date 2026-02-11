@@ -1,5 +1,4 @@
 {
-  "outputDirectory": "public",
   "rewrites": [
     { "source": "/analyze-tone", "destination": "/api/analyze-tone" }
   ]
