@@ -26,18 +26,9 @@ toggleBtn.addEventListener("click", () => {
 
 async function translateText(text, targetLang) {
   try {
-    const res = await fetch("https://translate.argosopentech.com/translate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        q: text,
-        source: "en",
-        target: targetLang,
-        format: "text"
-      })
-    });
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`);
     const data = await res.json();
-    return data.translatedText || text;
+    return data.responseData.translatedText;
   } catch (err) {
     console.error("Translation failed:", err);
     return "[Translation unavailable]";
