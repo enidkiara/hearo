@@ -26,9 +26,18 @@ toggleBtn.addEventListener("click", () => {
 
 async function translateText(text, targetLang) {
   try {
-    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`);
+    const res = await fetch("https://libretranslate.com/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        q: text,
+        source: "en",
+        target: targetLang,
+        format: "text"
+      })
+    });
     const data = await res.json();
-    return data.responseData.translatedText;
+    return data.translatedText;
   } catch (err) {
     console.error("Translation failed:", err);
     return text;
