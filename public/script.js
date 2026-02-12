@@ -1,10 +1,39 @@
 const captions = document.getElementById("captions");
+const translation = document.getElementById("translation");
 const toneDiv = document.getElementById("tone");
 const languageSelect = document.getElementById("language");
+const translateSelect = document.getElementById("translateTo");
+const toggleBtn = document.getElementById("toggleTranslate");
 
 let recognition;
 let toneTimeout;
 let isStarted = false;
+let translateEnabled = false;
+
+toggleBtn.addEventListener("click", () => {
+  translateEnabled = !translateEnabled;
+  
+  if (translateEnabled) {
+    toggleBtn.textContent = "Disable Translation";
+    translateSelect.style.display = "inline";
+    translation.style.display = "block";
+  } else {
+    toggleBtn.textContent = "Enable Translation";
+    translateSelect.style.display = "none";
+    translation.style.display = "none";
+  }
+});
+
+async function translateText(text, targetLang) {
+  try {
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`);
+    const data = await res.json();
+    return data.responseData.translatedText;
+  } catch (err) {
+    console.error("Translation failed:", err);
+    return text;
+  }
+}
 
 async function fetchTone(text) {
   try {
@@ -33,14 +62,21 @@ function createRecognition(lang) {
   rec.interimResults = true;
   rec.lang = lang;
 
-  rec.onresult = (event) => {
+  rec.onresult = async (event) => {
     let text = "";
     for (let i = event.resultIndex; i < event.results.length; i++) {
       text += event.results[i][0].transcript;
     }
 
     if (!text.trim()) return;
+
     captions.textContent = text;
+
+    if (translateEnabled) {
+      const targetLang = translateSelect.value;
+      const translated = await translateText(text, targetLang);
+      translation.textContent = "→ " + translated;
+    }
 
     clearTimeout(toneTimeout);
     toneTimeout = setTimeout(() => fetchTone(text), 800);
@@ -70,7 +106,7 @@ languageSelect.addEventListener("change", () => {
       recognition = createRecognition(languageSelect.value);
       isStarted = true;
       recognition.start();
-      captions.textContent = "Listening in " + languageSelect.options[languageSelect.selectedIndex].text + "…";
+      captions.textContent = "Listening…";
     }, 300);
   }
 });

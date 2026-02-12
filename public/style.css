@@ -1,21 +1,41 @@
 body {
-    font-family: sans-serif;
-    text-align: center;
-    margin: 20px;
-  }
-  
-  #controls {
-    margin-bottom: 15px;
-  }
-  
-  #captions {
-    margin-top: 20px;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  #tone {
-    margin-top: 10px;
-    font-size: 1.2rem;
-    color: #555;
-  }  
+  font-family: sans-serif;
+  text-align: center;
+  margin: 20px;
+}
+
+#controls {
+  margin-bottom: 15px;
+}
+
+#captions {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+#translation {
+  margin-top: 10px;
+  font-size: 1.3rem;
+  color: #0066cc;
+  font-style: italic;
+}
+
+#tone {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+button {
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 2px solid #333;
+  background: white;
+  border-radius: 5px;
+}
+
+button:hover {
+  background: #f0f0f0;
+}
