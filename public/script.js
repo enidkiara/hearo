@@ -26,7 +26,7 @@ toggleBtn.addEventListener("click", () => {
 
 async function translateText(text, targetLang) {
   try {
-    const res = await fetch("https://libretranslate.com/translate", {
+    const res = await fetch("https://translate.argosopentech.com/translate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -37,10 +37,10 @@ async function translateText(text, targetLang) {
       })
     });
     const data = await res.json();
-    return data.translatedText;
+    return data.translatedText || text;
   } catch (err) {
     console.error("Translation failed:", err);
-    return text;
+    return "[Translation unavailable]";
   }
 }
 
@@ -83,6 +83,7 @@ function createRecognition(lang) {
 
     if (translateEnabled) {
       const targetLang = translateSelect.value;
+      translation.textContent = "→ Translating...";
       const translated = await translateText(text, targetLang);
       translation.textContent = "→ " + translated;
     }
