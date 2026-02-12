@@ -4,6 +4,7 @@ const languageSelect = document.getElementById("language");
 
 let recognition;
 let toneTimeout;
+let isStarted = false;
 
 async function fetchTone(text) {
   try {
@@ -53,16 +54,25 @@ function createRecognition(lang) {
   };
 
   rec.onend = () => {
-    try { rec.start(); } catch (err) {}
+    if (isStarted) {
+      try { rec.start(); } catch (err) {}
+    }
   };
 
   return rec;
 }
 
 languageSelect.addEventListener("change", () => {
-  if (recognition) recognition.stop();
-  recognition = createRecognition(languageSelect.value);
-  if (recognition) recognition.start();
+  if (recognition) {
+    isStarted = false;
+    recognition.stop();
+    setTimeout(() => {
+      recognition = createRecognition(languageSelect.value);
+      isStarted = true;
+      recognition.start();
+      captions.textContent = "Listening in " + languageSelect.options[languageSelect.selectedIndex].text + "…";
+    }, 300);
+  }
 });
 
 document.body.addEventListener(
@@ -70,10 +80,9 @@ document.body.addEventListener(
   () => {
     if (!recognition) {
       recognition = createRecognition(languageSelect.value);
-      if (recognition) {
-        recognition.start();
-        captions.textContent = "Listening…";
-      }
+      isStarted = true;
+      recognition.start();
+      captions.textContent = "Listening…";
     }
   },
   { once: true }
