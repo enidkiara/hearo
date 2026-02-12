@@ -1,4 +1,4 @@
-const HF_API_URL = "https://api-inference.huggingface.co/models/cardiffnlp/twitter-roberta-base-sentiment-latest";
+const HF_API_URL = "https://router.huggingface.co/hf-inference/models/cardiffnlp/twitter-roberta-base-sentiment-latest";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
