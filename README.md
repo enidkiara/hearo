@@ -2,19 +2,19 @@
 
 ## The Problem
 
-Communication barriers happen everywhere. People who are deaf or hard of hearing can't follow conversations easily. Language differences make it hard to understand people who speak different languages. And even when we understand the words, we often miss the emotion behind them—whether someone sounds happy, upset, or neutral.
+Communication barriers happen everywhere. People who are deaf or hard of hearing can't follow conversations easily. Language differences make it hard to understand people who speak different languages. And even when we understand the words, we often miss the emotion behind them, whether someone sounds happy, upset, or neutral.
 
 Most solutions only fix one problem at a time. Caption apps help with hearing, translation apps help with language, and emotion is just left up to guessing. No tool does all three together.
 
 ## Our Solution
 
-We built Hearo—a web app that solves all three problems at once. Hearo gives you:
+We built Hearo, a web app that solves all three problems at once. Hearo gives you:
 
 1. **Live captions** that turn speech into text instantly
 2. **Tone detection** that tells you if someone sounds positive, negative, or neutral
 3. **Translation** that converts captions into different languages
 
-All three features work together in one simple app. You just open it in your browser, click to start, and Hearo does everything—transcribing, analyzing tone, and translating in real-time. It's completely free and works on any modern browser.
+All three features work together in one simple app. You just open it in your browser, click to start, and Hearo does everything: transcribing, analyzing tone, and translating in real-time. It's completely free and works on any modern browser.
 
 Hearo uses the Web Speech API for captions, Hugging Face AI for tone detection, and the MyMemory API for translation.
 
