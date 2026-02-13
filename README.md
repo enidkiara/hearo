@@ -25,11 +25,11 @@ Hearo uses the Web Speech API for captions, Hugging Face AI for tone detection, 
 | Date | Task | Time Spent | Team Members | Description |
 |------|------|------------|--------------|-------------|
 | 2/11/2026 | Testing & Final Polish | 1.5 hrs | Kiara, Jean Paul | Tested language switching, fixed translation bugs, added "Translating..." loading message, tested on different browsers and with different accents |
-| 2/10/2026 | Styling & Design | 2.5 hrs | Kiara, Jean Paul | Made everything centered, added custom colors, made buttons look better with hover effects, made it work on phones, improved error messages |
-| 2/9/2026 | Deployment | 2 hrs | Kiara, Jean Paul | Pushed code to GitHub, deployed to Vercel, fixed routing issues so the API functions work, added API key to Vercel settings, tested the live website |
+| 2/10/2026 | Styling & Design | 2.5 hrs | Jean Paul | Made everything centered, added custom colors, made buttons look better with hover effects, made it work on phones, improved error messages |
+| 2/9/2026 | Deployment | 2 hrs | Kiara | Pushed code to GitHub, deployed to Vercel, fixed routing issues so the API functions work, added API key to Vercel settings, tested the live website |
 | 2/8/2026 | Translation Feature | 3 hrs | Kiara, Jean Paul | Tried different translation APIs, picked MyMemory (free but has daily limit), made toggle button and language picker, created function to send text to translation API, made it show both original and translated text |
 | 2/7/2026 | Tone Detection | 2.5 hrs | Kiara, Jean Paul | Found Hugging Face sentiment model that works with conversation, made account and got API key, built function to send captions to the AI and get tone back, made it wait 800ms after speaking to analyze, tested with happy/sad/neutral phrases |
 | 2/6/2026 | Live Captions | 3 hrs | Kiara, Jean Paul | Got speech-to-text working using Web Speech API, added 6 different languages, fixed bug where mic would stop listening, made it automatically restart so it keeps transcribing |
-| 2/5/2026 | Planning & Setup | 2 hrs | Kiara, Jean Paul | Researched how to do speech recognition, picked Web Speech API because it's free and built into Chrome, set up file folders and basic HTML page, tested if microphone access works |
+| 2/5/2026 | Planning & Setup | 2 hrs | Kiara | Researched how to do speech recognition, picked Web Speech API because it's free and built into Chrome, set up file folders and basic HTML page, tested if microphone access works |
 
 **Total Time: ~16.5 hours**
