@@ -6,6 +6,7 @@
   ],
   "routes": [
     { "src": "/analyze-tone", "dest": "/api/analyze-tone.js" },
+    { "src": "/translate", "dest": "/api/translate.js" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
